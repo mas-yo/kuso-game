@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>kuso-game</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+        #gameCanvas { 
+            background-image: url('https://r-e.jp/wp-content/uploads/2021/05/c-kh-cor-0003-10.jpg'); /* 部屋の画像 */
+            background-size: cover;
+            cursor: pointer; 
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 画像のURL
+        const playerImageURL = 'https://pictogram-illustration.com/material/10-caution/0986-free-image-m.png'; // プレイヤーの画像
+        const dogImageURL = 'https://cdn.pixabay.com/photo/2018/05/26/18/06/dog-3431913_640.jpg'; // 犬の画像
+        const poopImageURL = 'https://media.istockphoto.com/id/1016777030/ja/%E3%83%99%E3%82%AF%E3%82%BF%E3%83%BC/%E7%B5%B5%E6%96%87%E5%AD%97%E9%A1%94%E3%82%92%E3%81%86%E3%82%93%E3%81%A1%E3%81%8B%E3%82%8F%E3%81%84%E3%81%84%E7%B5%B5%E6%96%87%E5%AD%97%E3%83%95%E3%83%A9%E3%83%83%E3%83%88%E3%81%AE%E7%AC%91%E9%A1%94%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%9B%B3.jpg?s=612x612&w=0&k=20&c=rol7JH1iISDcqYgIlBusm3U6gyeu499Bc92UYDfpmvE='; // フンの画像
+
+        // 画像オブジェクト
+        const playerImage = new Image();
+        const dogImage = new Image();
+        const poopImage = new Image();
+
+        // ゲームのパラメータ
+        const roomWidth = 600;
+        const roomHeight = 400;
+        const playerSize = 50; // 画像サイズに合わせて調整
+        const dogSize = 40; // 画像サイズに合わせて調整
+        const poopSize = 30; // 画像サイズに合わせて調整
+        let playerX = roomWidth / 2;
+        let playerY = roomHeight / 2;
+        let targetX = playerX;
+        let targetY = playerY;
+        const playerSpeed = 3;
+        let dogX = Math.random() * roomWidth;
+        let dogY = Math.random() * roomHeight;
+        let dogSpeedX = (Math.random() - 0.5) * 1.5;
+        let dogSpeedY = (Math.random() - 0.5) * 1.5;
+        const poops = [];
+
+        // キャンバスのサイズを設定
+        canvas.width = roomWidth;
+        canvas.height = roomHeight;
+
+        // プレイヤーを描画する関数
+        function drawPlayer() {
+            ctx.drawImage(playerImage, playerX - playerSize / 2, playerY - playerSize / 2, playerSize, playerSize);
+        }
+
+        // 犬を描画する関数
+        function drawDog() {
+            ctx.drawImage(dogImage, dogX - dogSize / 2, dogY - dogSize / 2, dogSize, dogSize);
+        }
+
+        // フンを描画する関数
+        function drawPoop(poop) {
+             ctx.drawImage(poopImage, poop.x - poopSize / 2, poop.y - poopSize / 2, poopSize, poopSize);
+        }
+
+        // フンを生成する関数
+        function createPoop() {
+            poops.push({ x: dogX, y: dogY });
+        }
+
+        // ゲームの状態を更新する関数
+        function updateGame() {
+            // 部屋の境界チェックと犬の移動
+            dogX += dogSpeedX;
+            dogY += dogSpeedY;
+            if (dogX < 0 || dogX > roomWidth) dogSpeedX *= -1;
+            if (dogY < 0 || dogY > roomHeight) dogSpeedY *= -1;
+
+            // プレイヤーの移動
+            const dx = targetX - playerX;
+            const dy = targetY - playerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance > 1) {
+                const moveX = (dx / distance) * playerSpeed;
+                const moveY = (dy / distance) * playerSpeed;
+                playerX += moveX;
+                playerY += moveY;
+            }
+
+            // 一定間隔でフンを生成
+            if (Math.random() < 0.01) {
+                createPoop();
+            }
+
+           // プレイヤーとフンの衝突判定と処理
+            for (let i = poops.length - 1; i >= 0; i--) {
+                const poop = poops[i];
+                const px = playerX;
+                const py = playerY;
+                const poopX = poop.x;
+                const poopY = poop.y;
+                const combinedRadius = playerSize / 2 + poopSize / 2;
+
+                if (Math.abs(px - poopX) < combinedRadius && Math.abs(py - poopY) < combinedRadius) {
+                    poops.splice(i, 1); // フンを削除
+                }
+            }
+        }
+
+        // 描画処理を行う関数
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            drawDog();
+            poops.forEach(drawPoop);
+        }
+
+        // ゲームループ
+        function gameLoop() {
+            updateGame();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // クリックイベントでプレイヤーの目標地点を設定
+        canvas.addEventListener('click', (event) => {
+            targetX = event.clientX - canvas.getBoundingClientRect().left;
+            targetY = event.clientY - canvas.getBoundingClientRect().top;
+        });
+
+        // 画像がロードされた後にゲームを開始
+        let imagesLoaded = 0;
+        const totalImages = 3; // プレイヤー、犬、フンの画像
+
+        const imageLoaded = () => {
+            imagesLoaded++;
+            if (imagesLoaded === totalImages) {
+                gameLoop(); // 全ての画像がロードされたらゲームを開始
+            }
+        };
+
+        playerImage.onload = imageLoaded;
+        dogImage.onload = imageLoaded;
+        poopImage.onload = imageLoaded;
+
+        playerImage.src = playerImageURL;
+        dogImage.src = dogImageURL;
+        poopImage.src = poopImageURL;
+    </script>
+</body>
+</html>
