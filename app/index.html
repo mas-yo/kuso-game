@@ -3,11 +3,23 @@
 <head>
     <title>kuso-game</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #f0f0f0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
         #gameCanvas { 
             background-image: url('https://r-e.jp/wp-content/uploads/2021/05/c-kh-cor-0003-10.jpg'); /* 部屋の画像 */
             background-size: cover;
-            cursor: pointer; 
+            cursor: pointer;
+            max-width: 100vw;
+            max-height: 100vh;
+            width: auto;
+            height: auto;
         }
     </style>
 </head>
@@ -47,6 +59,26 @@
         // キャンバスのサイズを設定
         canvas.width = roomWidth;
         canvas.height = roomHeight;
+
+        // キャンバスをブラウザサイズに合わせてスケーリング
+        function scaleCanvas() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // アスペクト比を維持しながらスケーリング
+            const scaleX = windowWidth / roomWidth;
+            const scaleY = windowHeight / roomHeight;
+            const scale = Math.min(scaleX, scaleY);
+            
+            canvas.style.width = (roomWidth * scale) + 'px';
+            canvas.style.height = (roomHeight * scale) + 'px';
+        }
+
+        // 初期スケーリング
+        scaleCanvas();
+
+        // ウィンドウリサイズ時にスケーリングを更新
+        window.addEventListener('resize', scaleCanvas);
 
         // プレイヤーを描画する関数
         function drawPlayer() {
@@ -125,8 +157,12 @@
 
         // クリックイベントでプレイヤーの目標地点を設定
         canvas.addEventListener('click', (event) => {
-            targetX = event.clientX - canvas.getBoundingClientRect().left;
-            targetY = event.clientY - canvas.getBoundingClientRect().top;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            targetX = (event.clientX - rect.left) * scaleX;
+            targetY = (event.clientY - rect.top) * scaleY;
         });
 
         // 画像がロードされた後にゲームを開始
