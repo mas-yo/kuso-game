@@ -13,7 +13,7 @@
             min-height: 100vh;
         }
         #gameCanvas { 
-            background-image: url('https://r-e.jp/wp-content/uploads/2021/05/c-kh-cor-0003-10.jpg'); /* 部屋の画像 */
+            background-image: './images/room.png'; /* 部屋の画像 */
             background-size: cover;
             cursor: pointer;
             max-width: 100vw;
@@ -30,9 +30,9 @@
         const ctx = canvas.getContext('2d');
 
         // 画像のURL
-        const playerImageURL = 'https://pictogram-illustration.com/material/10-caution/0986-free-image-m.png'; // プレイヤーの画像
+        const playerImageURL = './images/player.png'; // プレイヤーの画像
         const dogImageURL = './images/moco.png'; // 犬の画像
-        const poopImageURL = 'https://media.istockphoto.com/id/1016777030/ja/%E3%83%99%E3%82%AF%E3%82%BF%E3%83%BC/%E7%B5%B5%E6%96%87%E5%AD%97%E9%A1%94%E3%82%92%E3%81%86%E3%82%93%E3%81%A1%E3%81%8B%E3%82%8F%E3%81%84%E3%81%84%E7%B5%B5%E6%96%87%E5%AD%97%E3%83%95%E3%83%A9%E3%83%83%E3%83%88%E3%81%AE%E7%AC%91%E9%A1%94%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%9B%B3.jpg?s=612x612&w=0&k=20&c=rol7JH1iISDcqYgIlBusm3U6gyeu499Bc92UYDfpmvE='; // フンの画像
+        const poopImageURL = './images/poop.png'; // フンの画像
 
         // 画像オブジェクト
         const playerImage = new Image();
