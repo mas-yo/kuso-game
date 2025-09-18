@@ -28,8 +28,8 @@
         const poopImage = new Image();
 
         // ゲームのパラメータ
-        const roomWidth = 600;
-        const roomHeight = 400;
+        let roomWidth = window.innerWidth;
+        let roomHeight = window.innerHeight;
         const playerSize = 50; // 画像サイズに合わせて調整
         const dogSize = 40; // 画像サイズに合わせて調整
         const poopSize = 30; // 画像サイズに合わせて調整
@@ -47,6 +47,26 @@
         // キャンバスのサイズを設定
         canvas.width = roomWidth;
         canvas.height = roomHeight;
+
+        // ウィンドウリサイズ時の処理
+        function handleResize() {
+            roomWidth = window.innerWidth;
+            roomHeight = window.innerHeight;
+            canvas.width = roomWidth;
+            canvas.height = roomHeight;
+            
+            // プレイヤーが画面外に出ないように調整
+            if (playerX > roomWidth) playerX = roomWidth - playerSize / 2;
+            if (playerY > roomHeight) playerY = roomHeight - playerSize / 2;
+            if (targetX > roomWidth) targetX = roomWidth - playerSize / 2;
+            if (targetY > roomHeight) targetY = roomHeight - playerSize / 2;
+            
+            // 犬が画面外に出ないように調整
+            if (dogX > roomWidth) dogX = roomWidth - dogSize / 2;
+            if (dogY > roomHeight) dogY = roomHeight - dogSize / 2;
+        }
+        
+        window.addEventListener('resize', handleResize);
 
         // プレイヤーを描画する関数
         function drawPlayer() {
