@@ -55,6 +55,7 @@
         let dogSpeedX = (Math.random() - 0.5) * 1.5;
         let dogSpeedY = (Math.random() - 0.5) * 1.5;
         const poops = [];
+        let score = 0; // スコア変数
 
         // キャンバスのサイズを設定
         canvas.width = roomWidth;
@@ -136,8 +137,17 @@
 
                 if (Math.abs(px - poopX) < combinedRadius && Math.abs(py - poopY) < combinedRadius) {
                     poops.splice(i, 1); // フンを削除
+                    score += 10; // スコアを10点加算
                 }
             }
+        }
+
+        // スコアを描画する関数
+        function drawScore() {
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'right';
+            ctx.fillText(`SCORE: ${score}`, roomWidth - 10, 30);
         }
 
         // 描画処理を行う関数
@@ -146,6 +156,7 @@
             drawPlayer();
             drawDog();
             poops.forEach(drawPoop);
+            drawScore();
         }
 
         // ゲームループ
