@@ -112,6 +112,14 @@
             dogY += dogSpeedY;
             if (dogX < 0 || dogX > roomWidth) dogSpeedX *= -1;
             if (dogY < 0 || dogY > roomHeight) dogSpeedY *= -1;
+            
+            // ランダムに方向転換（壁にぶつかっていない時も）
+            if (Math.random() < 0.005) { // 0.5%の確率で方向転換
+                const currentSpeed = Math.sqrt(dogSpeedX * dogSpeedX + dogSpeedY * dogSpeedY);
+                const newAngle = Math.random() * 2 * Math.PI;
+                dogSpeedX = Math.cos(newAngle) * currentSpeed;
+                dogSpeedY = Math.sin(newAngle) * currentSpeed;
+            }
 
             // プレイヤーの移動
             const dx = targetX - playerX;
