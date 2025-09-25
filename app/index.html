@@ -52,10 +52,14 @@
         const playerSpeed = 3;
         let dogX = Math.random() * roomWidth;
         let dogY = Math.random() * roomHeight;
-        let dogSpeedX = (Math.random() - 0.5) * 1.5;
-        let dogSpeedY = (Math.random() - 0.5) * 1.5;
+        // 犬の速度を一定の大きさで、方向だけランダムにする
+        const dogSpeedMagnitude = 1.5; // 速度の大きさを一定に
+        const dogAngle = Math.random() * 2 * Math.PI; // ランダムな角度
+        let dogSpeedX = Math.cos(dogAngle) * dogSpeedMagnitude;
+        let dogSpeedY = Math.sin(dogAngle) * dogSpeedMagnitude;
         const poops = [];
         let score = 0; // スコア変数
+        let lastSpeedIncrease = 0; // 最後にスピードを上げたスコアのマイルストーン
 
         // キャンバスのサイズを設定
         canvas.width = roomWidth;
@@ -138,6 +142,16 @@
                 if (Math.abs(px - poopX) < combinedRadius && Math.abs(py - poopY) < combinedRadius) {
                     poops.splice(i, 1); // フンを削除
                     score += 10; // スコアを10点加算
+                    
+                    // スコアが100の倍数を超えるたびに犬のスピードを上げる
+                    const currentMilestone = Math.floor(score / 100) * 100;
+                    if (currentMilestone > lastSpeedIncrease && currentMilestone > 0) {
+                        // スピードを1.2倍に増加（最大スピード制限付き）
+                        const maxSpeed = 5.0; // 最大スピード制限
+                        dogSpeedX = Math.sign(dogSpeedX) * Math.min(Math.abs(dogSpeedX) * 1.2, maxSpeed);
+                        dogSpeedY = Math.sign(dogSpeedY) * Math.min(Math.abs(dogSpeedY) * 1.2, maxSpeed);
+                        lastSpeedIncrease = currentMilestone;
+                    }
                 }
             }
         }
