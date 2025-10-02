@@ -60,6 +60,7 @@
         const poops = [];
         let score = 0; // スコア変数
         let lastSpeedIncrease = 0; // 最後にスピードを上げたスコアのマイルストーン
+        let gameStartTime = null; // ゲーム開始時刻
 
         // キャンバスのサイズを設定
         canvas.width = roomWidth;
@@ -133,8 +134,8 @@
                 playerY += moveY;
             }
 
-            // 一定間隔でフンを生成
-            if (Math.random() < 0.01) {
+            // 一定間隔でフンを生成（ゲーム開始から5秒後から）
+            if (gameStartTime && Date.now() - gameStartTime > 5000 && Math.random() < 0.01) {
                 createPoop();
             }
 
@@ -205,6 +206,7 @@
         const imageLoaded = () => {
             imagesLoaded++;
             if (imagesLoaded === totalImages) {
+                gameStartTime = Date.now(); // ゲーム開始時刻を記録
                 gameLoop(); // 全ての画像がロードされたらゲームを開始
             }
         };
