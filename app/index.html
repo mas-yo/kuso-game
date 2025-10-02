@@ -135,7 +135,7 @@
             }
 
             // 一定間隔でフンを生成（ゲーム開始から5秒後から）
-            if (gameStartTime && Date.now() - gameStartTime > 5000 && Math.random() < 0.01) {
+            if (gameStartTime && Date.now() - gameStartTime > 5000 && Math.random() < getPoopRate()) {
                 createPoop();
             }
 
@@ -153,16 +153,20 @@
                     score += 10; // スコアを10点加算
                     
                     // スコアが100の倍数を超えるたびに犬のスピードを上げる
-                    const currentMilestone = Math.floor(score / 100) * 100;
+                    const currentMilestone = Math.floor(score / 50) * 50;
                     if (currentMilestone > lastSpeedIncrease && currentMilestone > 0) {
                         // スピードを1.2倍に増加（最大スピード制限付き）
                         const maxSpeed = 5.0; // 最大スピード制限
-                        dogSpeedX = Math.sign(dogSpeedX) * Math.min(Math.abs(dogSpeedX) * 1.2, maxSpeed);
-                        dogSpeedY = Math.sign(dogSpeedY) * Math.min(Math.abs(dogSpeedY) * 1.2, maxSpeed);
+                        dogSpeedX = Math.sign(dogSpeedX) * Math.min(Math.abs(dogSpeedX) * 1.5, maxSpeed);
+                        dogSpeedY = Math.sign(dogSpeedY) * Math.min(Math.abs(dogSpeedY) * 1.5, maxSpeed);
                         lastSpeedIncrease = currentMilestone;
                     }
                 }
             }
+        }
+
+        function getPoopRate() {
+            return Math.abs(dogSpeedX) / 100.0
         }
 
         // スコアを描画する関数
