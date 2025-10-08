@@ -153,12 +153,12 @@
                     score += 10; // スコアを10点加算
                     
                     // スコアが100の倍数を超えるたびに犬のスピードを上げる
-                    const currentMilestone = Math.floor(score / 50) * 50;
+                    const currentMilestone = Math.floor(score / 20) * 20;
                     if (currentMilestone > lastSpeedIncrease && currentMilestone > 0) {
                         // スピードを1.2倍に増加（最大スピード制限付き）
                         const maxSpeed = 5.0; // 最大スピード制限
-                        dogSpeedX = Math.sign(dogSpeedX) * Math.min(Math.abs(dogSpeedX) * 1.5, maxSpeed);
-                        dogSpeedY = Math.sign(dogSpeedY) * Math.min(Math.abs(dogSpeedY) * 1.5, maxSpeed);
+                        dogSpeedX = Math.sign(dogSpeedX) * Math.min(Math.abs(dogSpeedX) * 1.1, maxSpeed);
+                        dogSpeedY = Math.sign(dogSpeedY) * Math.min(Math.abs(dogSpeedY) * 1.1, maxSpeed);
                         lastSpeedIncrease = currentMilestone;
                     }
                 }
@@ -166,7 +166,7 @@
         }
 
         function getPoopRate() {
-            return Math.abs(dogSpeedX) / 100.0
+            return Math.abs(dogSpeedX) / 80.0
         }
 
         // スコアを描画する関数
