@@ -111,8 +111,8 @@
             // 部屋の境界チェックと犬の移動
             dogX += dogSpeedX;
             dogY += dogSpeedY;
-            if (dogX < 0 || dogX > roomWidth) dogSpeedX *= -1;
-            if (dogY < 0 || dogY > roomHeight) dogSpeedY *= -1;
+            if (dogX < 0 || dogX > roomWidth) { dogSpeedX *= -1; dogX = dogX < 0 ? 0 : roomWidth; }
+            if (dogY < 0 || dogY > roomHeight) { dogSpeedY *= -1; dogY = dogY < 0 ? 0 : roomHeight; }
             
             // ランダムに方向転換（壁にぶつかっていない時も）
             if (Math.random() < 0.005) { // 0.5%の確率で方向転換
@@ -153,10 +153,10 @@
                     score += 10; // スコアを10点加算
                     
                     // スコアが100の倍数を超えるたびに犬のスピードを上げる
-                    const currentMilestone = Math.floor(score / 20) * 20;
+                    const currentMilestone = Math.floor(score / 10) * 10;
                     if (currentMilestone > lastSpeedIncrease && currentMilestone > 0) {
                         // スピードを1.2倍に増加（最大スピード制限付き）
-                        const maxSpeed = 5.0; // 最大スピード制限
+                        const maxSpeed = 7.0; // 最大スピード制限
                         dogSpeedX = Math.sign(dogSpeedX) * Math.min(Math.abs(dogSpeedX) * 1.1, maxSpeed);
                         dogSpeedY = Math.sign(dogSpeedY) * Math.min(Math.abs(dogSpeedY) * 1.1, maxSpeed);
                         lastSpeedIncrease = currentMilestone;
@@ -166,7 +166,7 @@
         }
 
         function getPoopRate() {
-            return Math.abs(dogSpeedX) / 80.0
+            return Math.max(0.1, Math.abs(dogSpeedX) / 80.0);
         }
 
         // スコアを描画する関数
